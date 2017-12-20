@@ -15,7 +15,7 @@ x = {1, 2, 3}
 list(x)
 
 
-# In[14]:
+# In[3]:
 
 
 #### Pandas
@@ -31,14 +31,14 @@ import pandas as pd
 pd.read_csv("product_airtime.csv", nrows = 10)
 
 
-# In[ ]:
+# In[5]:
 
 
 #### 컬럼평균
 ##### product_airtime.csv에서 ONAIR_MINS 컬럼의 평균을 구하는 코드를 작성하라.
 
 
-# In[7]:
+# In[6]:
 
 
 import pandas as pd
@@ -46,7 +46,7 @@ air = pd.read_csv("product_airtime.csv")
 air["ONAIR_MINS"].mean()
 
 
-# In[ ]:
+# In[7]:
 
 
 #### 선택
@@ -62,14 +62,14 @@ air = pd.read_csv("product_airtime.csv")
 air.loc[10:21, ["ONAIR_START_TMS", "ONAIR_END_TMS"]]
 
 
-# In[ ]:
+# In[9]:
 
 
 #### 정렬
 ##### product_airtime.csv에서 ONAIR_MINS가 가장 짧은 5행을 보여주는 코드를 작성하라.
 
 
-# In[13]:
+# In[10]:
 
 
 import pandas as pd
@@ -77,7 +77,7 @@ air = pd.read_csv("product_airtime.csv")
 air["ONAIR_MINS"].sort_values().iloc[0:6]
 
 
-# In[17]:
+# In[11]:
 
 
 #### 필터:비교
@@ -88,7 +88,7 @@ air = pd.read_csv("product_airtime.csv")
 air[air["ONAIR_MINS"] < 0.1]
 
 
-# In[19]:
+# In[12]:
 
 
 #### 필터:날짜
@@ -98,7 +98,7 @@ air = pd.read_csv("product_airtime.csv")
 air[air["ONAIR_DATE"] == "2015-02-04"]
 
 
-# In[24]:
+# In[13]:
 
 
 #### isnull
@@ -109,13 +109,13 @@ air = pd.read_csv("product_airtime.csv")
 air[(~air["HOST1"].isnull()) & (~air["HOST2"].isnull())]
 
 
-# In[25]:
+# In[14]:
 
 
 air[~((air["HOST1"].isnull()) | (air["HOST2"].isnull()))]
 
 
-# In[27]:
+# In[15]:
 
 
 #### groupby, mean
@@ -125,7 +125,7 @@ air = pd.read_csv("product_airtime.csv")
 air.groupby("PRODUCT_NBR")["ONAIR_MINS"].mean()
 
 
-# In[30]:
+# In[16]:
 
 
 #### groupby, filter
@@ -138,7 +138,7 @@ group = air.groupby("PRODUCT_NBR")
 group.filter(lambda group : len(group) > 10)
 
 
-# In[36]:
+# In[17]:
 
 
 ## pivot table
@@ -153,4 +153,84 @@ pd.pivot_table(product,
               values = "PRODUCT_NBR",
               aggfunc = len,
               fill_value = 0)
+
+
+# In[18]:
+
+
+import numpy as np
+
+
+# In[19]:
+
+
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+iris = sns.load_dataset("iris")
+
+
+# In[20]:
+
+
+iris.head()
+
+
+# In[21]:
+
+
+## distplot
+get_ipython().magic('matplotlib inline')
+import seaborn as sns
+plot = sns.distplot(iris["petal_length"], vertical = True, hist=False)
+
+
+# In[22]:
+
+
+## regplot
+get_ipython().magic('matplot inline')
+import seaborn as sns
+sns.regplot(x = iris["sepal_length"],
+           y = iris["petal_length"],
+           fit_reg = False,
+           color = "red")
+
+
+# In[23]:
+
+
+get_ipython().magic('matplotlib inline')
+import seaborn as sns
+
+sns.barplot(x=iris["species"], y=iris["sepal_length"], ci=None)
+
+
+# In[24]:
+
+
+get_ipython().magic('matplotlib')
+import seaborn as sns
+
+g = sns.FacetGrid(iris, col = "species")
+g.map(sns.distplot, "petal_length")
+
+
+# In[25]:
+
+
+## PairGrid
+get_ipython().magic('matplotlib inline')
+import seaborn as sns
+g = sns.PairGrid(iris, hue="species")
+g.map(sns.regplot, fit_reg=False)
+
+
+# In[28]:
+
+
+import statsmodels.formula.api as smf
+results = smf.ols("petal_length ~ sepal_length + sepal_width",
+                 data = iris).fit()
+results.summary()
 
